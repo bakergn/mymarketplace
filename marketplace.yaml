@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: my-marketplace
+spec:
+   strategy:
+    type: Recreate
+   selector:
+    matchLabels:
+      app: my-marketplace
+   template:
+    metadata:
+      labels:
+        app: my-marketplace
+    spec:
+      containers:
+      - name: my-marketplace
+        image: bakergn/my-marketplace:latest
+        imagePullPolicy: Always
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Production
+        - name: MyMarketplacePath
+          value: /usr/data
+        ports:
+        - containerPort: 8638
+        volumeMounts:
+        - name: sqlite-volume
+          mountPath: /usr/data
+      volumes:
+      - name: sqlite-volume
+        persistentVolumeClaim:
+          claimName: sqlite-pvc
+
+  
